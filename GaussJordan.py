@@ -1,33 +1,14 @@
 def print_matrix(M, decimals=3):
-    """
-    Print a matrix one row at a time
-
-    :param M: The matrix to be printed
-    """
     for row in M:
         print([round(x, decimals) + 0 for x in row])
 
 
 def zeros_matrix(rows, cols):
-    M = []
-    while len(M) < rows:
-        M.append([])
-        while len(M[-1]) < cols:
-            M[-1].append(0.0)
-    return M
+    return [[0.0] * cols for _ in range(rows)]
 
 
 def coef_matrix(augMat):
-    rows = len(augMat)
-    cols = len(augMat[0])
-
-    MC = zeros_matrix(rows, cols - 1)
-
-    for i in range(rows):
-        for j in range(cols - 1):
-            MC[i][j] = augMat[i][j]
-
-    return MC
+    return [row[:-1] for row in augMat]
 
 
 def trocarLinhas(AM, i, n):
@@ -40,94 +21,81 @@ def trocarLinhas(AM, i, n):
 
 def determinant(AM):
     n = len(AM)
-
-    # Redução à forma triangular superior
-    for fd in range(n):  # fd: foco diagonal values
+    for fd in range(n):
         trocarLinhas(AM, fd, n)
-
         for i in range(fd + 1, n):
             crScaler = AM[i][fd] / AM[fd][fd]
             for j in range(n):
-                AM[i][j] = AM[i][j] - crScaler * AM[fd][j]
-
-    # Uma vez que temos a forma triangular, calculamos o produto da diagonal principal
+                AM[i][j] -= crScaler * AM[fd][j]
     product = 1.0
     for i in range(n):
         product *= AM[i][i]
-
     return product
 
 
 def verifica_non_singularidade(A):
     if A != 0:
-        return print("Matriz não singular")
+        print("Matriz não singular")
+        return True
     else:
         print("Matriz singular !!!!!!!!!!")
         return False
 
 
 def GaussJordanMethod(augMat):
-    n = len(augMat)  # Número de linhas
-    m = len(augMat[0])  # Número de colunas
-
+    n = len(augMat)
+    m = len(augMat[0])
+    
     for i in range(n):
-        # Verifica se o pivô é zero e muda a linha se necessário
         trocarLinhas(augMat, i, n)
-
-        # Normalizando cada linha
-        # L_i <-- L_i / a_ii
-        if augMat[i][i] != 1:
-            divisor = augMat[i][i]
-            for k in range(m):
-                augMat[i][k] /= divisor
-
-        # Zera as entradas referentes aos pivôs
-        # L_j <-- L_j - a_ji * L_i
+        divisor = augMat[i][i]
+        if divisor != 0:
+            augMat[i] = [x / divisor for x in augMat[i]]
+        
         for j in range(n):
             if i != j:
                 coef = augMat[j][i]
-                for k in range(m):
-                    augMat[j][k] -= coef * augMat[i][k]
+                augMat[j] = [a - coef * b for a, b in zip(augMat[j], augMat[i])]
 
-    print(augMat)
+    solution = [max(0, round(row[-1])) for row in augMat]
+    
+    return solution
 
-def print_respostas(augMat):
-    # Imprime apenas os resultados das calorias
-    for row in augMat:
-        print(f"Inseto X: {round(augMat[0][-1], 3)}")
-        print(f"Inseto Y: {round(augMat[1][-1], 3)}")
 
 def Resolver(matrix):
     mc = coef_matrix(matrix)
     print("Matriz de coeficientes:")
     print_matrix(mc)
-
-    det = determinant(mc)
+    
+    det = determinant([row[:] for row in mc])  # Copia para não modificar a original
     print(f"Determinante: {det}")
-
-    if verifica_non_singularidade(det) != False:
-        GaussJordanMethod(matrix)
-        print_respostas(matrix)
-
-
-
-x = float(input("coloque quantos insetos X foram achados no estomago do primeiro peixe: "))
-y = float(input("coloque quantos insetos Y foram achados no estomago do primeiro peixe: "))
-
-xx = float(input("Oloque quantos insetos X foram achados no estomago do segundo peixe: "))
-yy = float(input("Oloque quantos insetos Y foram achados no estomago do segundo peixe: "))
-
-r = float(input("Coloque o total de caloria que o primeiro peixe teria consumido: "))
-rr = float(input("Coloque o total de caloria que o segundo peixe teria consumido: "))
-
-matrix = [[x , y, r],
-          [xx, yy, rr]]
+    
+    if verifica_non_singularidade(det):
+        solution = GaussJordanMethod(matrix)
+        print("Número de barcos em cada zona:")
+        print(f"Zona A: {solution[0]} barcos")
+        print(f"Zona B: {solution[1]} barcos")
+        print(f"Zona C: {solution[2]} barcos")
 
 
+x1 = float(input("Coloque o kg de peixes(A) por barco na zona A: "))
+x2 = float(input("Coloque o kg de peixes(A) por barco na zona B: "))
+x3 = float(input("Coloque o kg de peixes(A) por barco na zona C: "))
+r1 = float(input("Coloque o KG max permitido de captura do peixe A: "))
 
+x4 = float(input("Coloque o kg de peixes(B) por barco na zona A: "))
+x5 = float(input("Coloque o kg de peixes(B) por barco na zona B: "))
+x6 = float(input("Coloque o kg de peixes(B) por barco na zona C: "))
+r2 = float(input("Coloque o KG max permitido de captura do peixe B: "))
 
+x7 = float(input("Coloque o kg de peixes(C) por barco na zona A: "))
+x8 = float(input("Coloque o kg de peixes(C) por barco na zona B: "))
+x9 = float(input("Coloque o kg de peixes(C) por barco na zona C: "))
+r3 = float(input("Coloque o KG max permitido de captura do peixe C: "))
 
-
-
+matrix = [[x1, x2, x3, r1],
+          [x4, x5, x6, r2],
+          [x7, x8, x9, r3]]
 
 Resolver(matrix)
+print("Valores arredondados!")
