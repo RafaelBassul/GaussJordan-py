@@ -60,7 +60,7 @@ def determinant(AM):
 
 def verifica_non_singularidade(A):
     if A != 0:
-        return print("Matriz não singular !!!!!!!!!!")
+        return print("Matriz não singular")
     else:
         print("Matriz singular !!!!!!!!!!")
         return False
@@ -91,6 +91,11 @@ def GaussJordanMethod(augMat):
 
     print(augMat)
 
+def print_respostas(augMat):
+    # Imprime apenas os resultados das calorias
+    for row in augMat:
+        print(f"Inseto X: {round(augMat[0][-1], 3)}")
+        print(f"Inseto Y: {round(augMat[1][-1], 3)}")
 
 def Resolver(matrix):
     mc = coef_matrix(matrix)
@@ -102,23 +107,24 @@ def Resolver(matrix):
 
     if verifica_non_singularidade(det) != False:
         GaussJordanMethod(matrix)
-
-
-x = float(input("Coloque quantas proções você colocou do item X na primeira mistura: "))
-y = float(input("Coloque quantas proções você colocou do item Y na primeira mistura: "))
-
-xx = float(input("Coloque quantas proções você colocou do item X na segunda mistura: "))
-yy = float(input("Coloque quantas proções você colocou do item Y na segunda mistura: "))
-
-r = float(input("Coloque o total de caloria a primeira porção tem: "))
-rr = float(input("Coloque o total de caloria a segunda porção tem: "))
+        print_respostas(matrix)
 
 
 
+x = float(input("coloque quantos insetos X foram achados no estomago do primeiro peixe: "))
+y = float(input("coloque quantos insetos Y foram achados no estomago do primeiro peixe: "))
 
+xx = float(input("Oloque quantos insetos X foram achados no estomago do segundo peixe: "))
+yy = float(input("Oloque quantos insetos Y foram achados no estomago do segundo peixe: "))
+
+r = float(input("Coloque o total de caloria que o primeiro peixe teria consumido: "))
+rr = float(input("Coloque o total de caloria que o segundo peixe teria consumido: "))
 
 matrix = [[x , y, r],
           [xx, yy, rr]]
+
+
+
 
 
 
